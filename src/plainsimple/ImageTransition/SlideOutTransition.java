@@ -65,7 +65,7 @@ public class SlideOutTransition {
 
     // renders and returns next frame in sequence
     public Bitmap nextFrame() { // todo: require start?
-        if(frameCounter < totalFrames) {
+        if (frameCounter < totalFrames) {
             frameCounter++;
             if (frameCounter + 1 == totalFrames) {
                 transitionFinished = true;
@@ -76,7 +76,7 @@ public class SlideOutTransition {
 
     // renders and returns frame based on completion of sequence
     public Bitmap getFrame(float completion) throws IndexOutOfBoundsException {
-        if(completion > 1.0 || completion < 0.0) {
+        if (completion > 1.0 || completion < 0.0) {
             throw new IndexOutOfBoundsException("Invalid frame requested (" + (totalFrames * completion) + ")");
         } else {
             Canvas this_frame = new Canvas(startScreen);
