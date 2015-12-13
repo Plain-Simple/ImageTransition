@@ -1,3 +1,5 @@
+package plainsimple.spaceships;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -21,8 +23,20 @@ public class SlideOutTransition {
     private Paint paint;
     // percentage a row should slide across screen before next row starts moving
     private float threshold;
+    // whether or not transition has been completed
+    private boolean transitionFinished = false;
+    private boolean isPlaying = false;
+
     private int screenWidth;
     private int screenHeight;
+
+    public boolean hasFinished() {
+        return transitionFinished;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
 
     public SlideOutTransition(Bitmap startScreen, int numRows, int totalFrames) {
         this.startScreen = startScreen;
@@ -34,14 +48,29 @@ public class SlideOutTransition {
         paint.setColor(Color.BLACK);
     }
 
+    public void start() {
+        isPlaying = true;
+    }
+
+    // sets transitionFinished to true
+    public void stop() {
+        transitionFinished = true;
+        isPlaying = false;
+    }
+
     // resets frameCounter to zero
     public void reset() {
         frameCounter = 0;
     }
 
     // renders and returns next frame in sequence
-    public Bitmap nextFrame() {
-        frameCounter++;
+    public Bitmap nextFrame() { // todo: require start?
+        if(frameCounter < totalFrames) {
+            frameCounter++;
+            if (frameCounter + 1 == totalFrames) {
+                transitionFinished = true;
+            }
+        }
         return getFrame(frameCounter);
     }
 
