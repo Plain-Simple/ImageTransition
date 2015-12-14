@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 /**
  * Given starting image of screen, creates a "sliding out" animation
@@ -13,8 +14,8 @@ public class SlideOutTransition {
 
     // starting image
     private Bitmap startScreen;
-    // working image
-    private Bitmap frame;
+    // actual working frame to be drawn on
+    private Bitmap workingFrame;
     // current frame
     private int frameCounter = 0;
     // total frames in animation
@@ -42,7 +43,7 @@ public class SlideOutTransition {
 
     public SlideOutTransition(Bitmap startScreen, int numRows, int totalFrames) {
         this.startScreen = startScreen.copy(Bitmap.Config.ARGB_8888, true);
-        //frame = startScreen.copy(Bitmap.Config.ARGB_8888, true);
+        workingFrame = startScreen.copy(Bitmap.Config.ARGB_8888, true);
         this.numRows = numRows;
         this.totalFrames = totalFrames;
         screenWidth = startScreen.getWidth();
@@ -72,8 +73,10 @@ public class SlideOutTransition {
             frameCounter++;
             if (frameCounter + 1 == totalFrames) {
                 transitionFinished = true;
+                isPlaying = false;
             }
         }
+        Log.d("Transition Class", "Returning Frame " + frameCounter);
         return getFrame(frameCounter);
     }
 
@@ -82,7 +85,7 @@ public class SlideOutTransition {
         if (completion > 1.0 || completion < 0.0) {
             throw new IndexOutOfBoundsException("Invalid frame requested (" + (totalFrames * completion) + ")");
         } else {
-            Canvas this_frame = new Canvas(startScreen);
+            Canvas this_frame = new Canvas(workingFrame);
             int row_height = screenWidth / numRows;
 
             int full_rows = (int) (completion * numRows);
@@ -91,7 +94,7 @@ public class SlideOutTransition {
             double row_completion = completion - (full_rows / numRows) * completion;
             this_frame.drawRect((float) (row_completion * screenWidth), full_rows * row_height,
                     screenWidth - 1, (full_rows + 1) / numRows * row_height, paint);
-            return startScreen;
+            return workingFrame;
         }
     }
 

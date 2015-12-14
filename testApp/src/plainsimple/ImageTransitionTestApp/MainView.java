@@ -44,10 +44,10 @@ public class MainView extends View {
     protected void onDraw(Canvas canvas) {
         if(slideOut.isPlaying()) {
             canvas.drawBitmap(slideOut.nextFrame(), 0, 0, null);
-            Log.d("MainView Class", "Playing Transition");
         } else {
             canvas.drawBitmap(titleGraphic, 0, 0, null);
         }
+        invalidate();
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -56,16 +56,22 @@ public class MainView extends View {
         int y = (int) event.getY();
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if(!slideOut.isPlaying()) {
+                    if(slideOut.hasFinished()) {
+                        slideOut.reset();
+                    }
+                    Log.d("MainView Class", "Starting Transition");
+                    slideOut.start();
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                if(!slideOut.isPlaying()) {
-                    slideOut.start();
-                }
+                Log.d("MainView Class", "Stopping Transition");
+                slideOut.stop();
                 break;
         }
-        invalidate();
+        //invalidate();
         return true;
     }
 }
