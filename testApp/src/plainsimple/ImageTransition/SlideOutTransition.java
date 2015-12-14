@@ -62,9 +62,10 @@ public class SlideOutTransition {
         isPlaying = false;
     }
 
-    // resets frameCounter to zero
+    // resets frameCounter to zero and recopies startScreen into workingFrame
     public void reset() {
         frameCounter = 0;
+        workingFrame = startScreen.copy(Bitmap.Config.ARGB_8888, true);
     }
 
     // renders and returns next frame in sequence
@@ -82,6 +83,7 @@ public class SlideOutTransition {
 
     // renders and returns frame based on completion of sequence
     public Bitmap getFrame(float completion) throws IndexOutOfBoundsException {
+        Log.d("Transition Class", "completion = " + completion);
         if (completion > 1.0 || completion < 0.0) {
             throw new IndexOutOfBoundsException("Invalid frame requested (" + (totalFrames * completion) + ")");
         } else {
@@ -89,17 +91,17 @@ public class SlideOutTransition {
             int row_height = screenWidth / numRows;
 
             int full_rows = (int) (completion * numRows);
-            this_frame.drawRect(0, 0, screenWidth - 1, full_rows * row_height, paint);
+            this_frame.drawRect(0, 0, screenWidth, full_rows * row_height, paint);
 
             double row_completion = completion - (full_rows / numRows) * completion;
             this_frame.drawRect((float) (row_completion * screenWidth), full_rows * row_height,
-                    screenWidth - 1, (full_rows + 1) / numRows * row_height, paint);
+                    screenWidth, (full_rows + 1) / numRows * row_height, paint);
             return workingFrame;
         }
     }
 
     // renders and returns frame based on frameNumber in sequence
     public Bitmap getFrame(int frameNumber) {
-        return getFrame((float) (frameNumber / totalFrames));
+        return getFrame(frameNumber / (float) totalFrames);
     }
 }
