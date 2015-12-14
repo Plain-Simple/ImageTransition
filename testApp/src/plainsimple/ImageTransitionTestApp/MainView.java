@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import plainsimple.ImageTransition.SlideOutTransition;
 
 /**
  * Created by Stefan on 10/17/2015.
@@ -21,11 +22,13 @@ public class MainView extends View {
     private int screenW;
     private int screenH;
     private Context context;
+    private SlideOutTransition slideOut;
 
     public MainView(Context context) {
         super(context);
         this.context = context;
         titleGraphic = BitmapFactory.decodeResource(getResources(), R.drawable.title_graphic);
+        slideOut = new SlideOutTransition(titleGraphic, 6, 100);
     }
 
     @Override
@@ -34,12 +37,17 @@ public class MainView extends View {
         screenW = w;
         screenH = h;
         Bitmap.createScaledBitmap(titleGraphic, w, h, false);
+        slideOut = new SlideOutTransition(titleGraphic, 6, 100);
     }
 
-    // draws titleGraphic centered on screen
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawBitmap(titleGraphic, 0, 0, null);
+        if(slideOut.isPlaying()) {
+            canvas.drawBitmap(slideOut.nextFrame(), 0, 0, null);
+            Log.d("MainView Class", "Playing Transition");
+        } else {
+            canvas.drawBitmap(titleGraphic, 0, 0, null);
+        }
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -52,15 +60,12 @@ public class MainView extends View {
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
+                if(!slideOut.isPlaying()) {
+                    slideOut.start();
+                }
                 break;
         }
         invalidate();
         return true;
-    }
-
-    // starts the game activity
-    private void launchGameIntent() {
-        Intent game_intent = new Intent(context, MainActivity.class);
-        context.startActivity(game_intent);
     }
 }

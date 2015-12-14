@@ -1,4 +1,4 @@
-package plainsimple.spaceships;
+package plainsimple.ImageTransition;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -13,6 +13,8 @@ public class SlideOutTransition {
 
     // starting image
     private Bitmap startScreen;
+    // working image
+    private Bitmap frame;
     // current frame
     private int frameCounter = 0;
     // total frames in animation
@@ -39,7 +41,8 @@ public class SlideOutTransition {
     }
 
     public SlideOutTransition(Bitmap startScreen, int numRows, int totalFrames) {
-        this.startScreen = startScreen;
+        this.startScreen = startScreen.copy(Bitmap.Config.ARGB_8888, true);
+        //frame = startScreen.copy(Bitmap.Config.ARGB_8888, true);
         this.numRows = numRows;
         this.totalFrames = totalFrames;
         screenWidth = startScreen.getWidth();
