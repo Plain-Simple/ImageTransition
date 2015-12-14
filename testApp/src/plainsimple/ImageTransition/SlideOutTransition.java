@@ -77,25 +77,25 @@ public class SlideOutTransition {
                 isPlaying = false;
             }
         }
-        Log.d("Transition Class", "Returning Frame " + frameCounter);
         return getFrame(frameCounter);
     }
 
     // renders and returns frame based on completion of sequence
     public Bitmap getFrame(float completion) throws IndexOutOfBoundsException {
-        Log.d("Transition Class", "completion = " + completion);
         if (completion > 1.0 || completion < 0.0) {
             throw new IndexOutOfBoundsException("Invalid frame requested (" + (totalFrames * completion) + ")");
         } else {
             Canvas this_frame = new Canvas(workingFrame);
-            int row_height = screenWidth / numRows;
-
+            int row_height = screenWidth / numRows; // todo: screen size is off
+            Log.d("TransitionClass", "numRows = " + numRows + " screenWidth = " + screenWidth + " row_height = " + row_height);
+            // calculate and draw full rows
             int full_rows = (int) (completion * numRows);
             this_frame.drawRect(0, 0, screenWidth, full_rows * row_height, paint);
 
-            double row_completion = completion - (full_rows / numRows) * completion;
-            this_frame.drawRect((float) (row_completion * screenWidth), full_rows * row_height,
-                    screenWidth, (full_rows + 1) / numRows * row_height, paint);
+            // calculate percentage of current row completed
+            float row_completion = (completion - (full_rows / (float) numRows)) * (float) numRows;
+            this_frame.drawRect((1.0f - row_completion) * (float) screenWidth, full_rows * row_height,
+                    screenWidth, (full_rows + 1) * row_height, paint);
             return workingFrame;
         }
     }
