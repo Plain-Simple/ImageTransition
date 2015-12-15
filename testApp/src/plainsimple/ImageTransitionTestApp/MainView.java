@@ -26,7 +26,7 @@ public class MainView extends View {
         super(context);
         this.context = context;
         titleGraphic = BitmapFactory.decodeResource(getResources(), R.drawable.title_graphic);
-        slideOut = new SlideOutTransition(titleGraphic, 6, 100);
+        //slideOut = new SlideOutTransition(titleGraphic, 6, 100);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class MainView extends View {
         super.onSizeChanged(w, h, oldW, oldH);
         screenW = w;
         screenH = h;
-        Bitmap.createScaledBitmap(titleGraphic, w, h, false);
+        titleGraphic = Bitmap.createScaledBitmap(titleGraphic, screenW, screenH, false); // todo: use matrix to resize image
         slideOut = new SlideOutTransition(titleGraphic, 6, 100);
     }
 
@@ -58,14 +58,12 @@ public class MainView extends View {
                     if(slideOut.hasFinished()) {
                         slideOut.reset();
                     }
-                    Log.d("MainView Class", "Starting Transition");
                     slideOut.start();
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                Log.d("MainView Class", "Stopping Transition");
                 slideOut.stop();
                 break;
         }

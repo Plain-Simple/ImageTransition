@@ -86,8 +86,7 @@ public class SlideOutTransition {
             throw new IndexOutOfBoundsException("Invalid frame requested (" + (totalFrames * completion) + ")");
         } else {
             Canvas this_frame = new Canvas(workingFrame);
-            int row_height = screenWidth / numRows; // todo: screen size is off
-            Log.d("TransitionClass", "numRows = " + numRows + " screenWidth = " + screenWidth + " row_height = " + row_height);
+            int row_height = screenHeight / numRows; // todo: screen size is off
             // calculate and draw full rows
             int full_rows = (int) (completion * numRows);
             this_frame.drawRect(0, 0, screenWidth, full_rows * row_height, paint);
