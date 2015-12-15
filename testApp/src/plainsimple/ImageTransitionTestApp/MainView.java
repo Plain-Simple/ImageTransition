@@ -14,19 +14,15 @@ import plainsimple.ImageTransition.SlideOutTransition;
 public class MainView extends View {
 
     private Bitmap titleGraphic;
-    private Bitmap playButtonUp;
-    private Bitmap playButtonDown;
-    private boolean playButtonPressed = false;
+    private Bitmap testGraphic;
     private int screenW;
     private int screenH;
-    private Context context;
     private SlideOutTransition slideOut;
 
     public MainView(Context context) {
         super(context);
-        this.context = context;
         titleGraphic = BitmapFactory.decodeResource(getResources(), R.drawable.title_graphic);
-        //slideOut = new SlideOutTransition(titleGraphic, 6, 100);
+        testGraphic = BitmapFactory.decodeResource(getResources(), R.drawable.test_screen);
     }
 
     @Override
@@ -35,7 +31,8 @@ public class MainView extends View {
         screenW = w;
         screenH = h;
         titleGraphic = Bitmap.createScaledBitmap(titleGraphic, screenW, screenH, false); // todo: use matrix to resize image
-        slideOut = new SlideOutTransition(titleGraphic, 6, 100);
+        testGraphic = Bitmap.createScaledBitmap(testGraphic, screenW, screenH, false);
+        slideOut = new SlideOutTransition(titleGraphic, testGraphic, 6, 100);
     }
 
     @Override
@@ -49,7 +46,6 @@ public class MainView extends View {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        //int event_action = event.getAction();
         int x = (int) event.getX();
         int y = (int) event.getY();
         switch(event.getAction()) {
@@ -67,7 +63,6 @@ public class MainView extends View {
                 slideOut.stop();
                 break;
         }
-        //invalidate();
         return true;
     }
 }

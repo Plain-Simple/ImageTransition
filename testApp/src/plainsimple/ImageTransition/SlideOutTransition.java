@@ -16,6 +16,8 @@ public class SlideOutTransition {
     private Bitmap startScreen;
     // actual working frame to be drawn on
     private Bitmap workingFrame;
+    // ending image
+    private Bitmap endScreen;
     // current frame
     private int frameCounter = 0;
     // total frames in animation
@@ -41,9 +43,10 @@ public class SlideOutTransition {
         return isPlaying;
     }
 
-    public SlideOutTransition(Bitmap startScreen, int numRows, int totalFrames) {
-        this.startScreen = startScreen.copy(Bitmap.Config.ARGB_8888, true);
+    public SlideOutTransition(Bitmap startScreen, Bitmap endScreen, int numRows, int totalFrames) {
+        this.startScreen = startScreen;
         workingFrame = startScreen.copy(Bitmap.Config.ARGB_8888, true);
+        this.endScreen = endScreen;
         this.numRows = numRows;
         this.totalFrames = totalFrames;
         screenWidth = startScreen.getWidth();
@@ -72,31 +75,32 @@ public class SlideOutTransition {
     public Bitmap nextFrame() { // todo: require start?
         if (frameCounter < totalFrames) {
             frameCounter++;
-            if (frameCounter + 1 == totalFrames) {
-                transitionFinished = true;
-                isPlaying = false;
-            }
+        } else if (frameCounter == totalFrames) {
+            transitionFinished = true;
+            isPlaying = false;
         }
         return getFrame(frameCounter);
     }
 
     // renders and returns frame based on completion of sequence
-    public Bitmap getFrame(float completion) throws IndexOutOfBoundsException {
-        if (completion > 1.0 || completion < 0.0) {
-            throw new IndexOutOfBoundsException("Invalid frame requested (" + (totalFrames * completion) + ")");
-        } else {
-            Canvas this_frame = new Canvas(workingFrame);
-            int row_height = screenHeight / numRows; // todo: screen size is off
-            // calculate and draw full rows
-            int full_rows = (int) (completion * numRows);
-            this_frame.drawRect(0, 0, screenWidth, full_rows * row_height, paint);
+    public Bitmap getFrame(float completion) { // todo: out of bounds error handling
+        Canvas this_frame = new Canvas(workingFrame);
+        int row_height = screenHeight / numRows;
 
-            // calculate percentage of current row completed
-            float row_completion = (completion - (full_rows / (float) numRows)) * (float) numRows;
-            this_frame.drawRect((1.0f - row_completion) * (float) screenWidth, full_rows * row_height,
-                    screenWidth, (full_rows + 1) * row_height, paint);
-            return workingFrame;
+        int full_rows = (int) (completion * numRows);
+        if(full_rows > 0) {
+            Bitmap subimage = Bitmap.createBitmap(endScreen, 0, 0, screenWidth, full_rows * row_height); // todo: use drawBitmap with rectangles
+            this_frame.drawBitmap(subimage, 0, 0, null);
         }
+
+        // calculate percentage of current row completed
+        float row_completion = (completion - (full_rows / (float) numRows)) * (float) numRows;
+        if(row_completion > 0) {
+            Bitmap subimage = Bitmap.createBitmap(endScreen, (int) ((1.0f - row_completion) * screenWidth),
+                    full_rows * row_height, (int) (row_completion * (float) screenWidth), row_height);
+            this_frame.drawBitmap(subimage, (1.0f - row_completion) * (float) screenWidth, full_rows * row_height, null);
+        }
+        return workingFrame;
     }
 
     // renders and returns frame based on frameNumber in sequence
