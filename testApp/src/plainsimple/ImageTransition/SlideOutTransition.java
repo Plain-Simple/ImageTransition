@@ -1,9 +1,6 @@
 package plainsimple.ImageTransition;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.util.Log;
 
 /**
@@ -89,16 +86,18 @@ public class SlideOutTransition {
 
         int full_rows = (int) (completion * numRows);
         if(full_rows > 0) {
-            Bitmap subimage = Bitmap.createBitmap(endScreen, 0, 0, screenWidth, full_rows * row_height); // todo: use drawBitmap with rectangles
-            this_frame.drawBitmap(subimage, 0, 0, null);
+            Rect src = new Rect(0, 0, screenWidth, full_rows * row_height);
+            this_frame.drawBitmap(endScreen, src, src, null);
         }
 
         // calculate percentage of current row completed
         float row_completion = (completion - (full_rows / (float) numRows)) * (float) numRows;
+
+        // define subimage of endScreen to draw and transfer onto canvas
         if(row_completion > 0) {
-            Bitmap subimage = Bitmap.createBitmap(endScreen, (int) ((1.0f - row_completion) * screenWidth),
-                    full_rows * row_height, (int) (row_completion * (float) screenWidth), row_height);
-            this_frame.drawBitmap(subimage, (1.0f - row_completion) * (float) screenWidth, full_rows * row_height, null);
+            Rect src = new Rect((int) ((1.0f - row_completion) * screenWidth),
+                    full_rows * row_height, screenWidth, (full_rows + 1) * row_height);
+            this_frame.drawBitmap(endScreen, src, src, null);
         }
         return workingFrame;
     }
