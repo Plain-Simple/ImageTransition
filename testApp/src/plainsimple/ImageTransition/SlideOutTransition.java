@@ -1,7 +1,6 @@
 package plainsimple.ImageTransition;
 
 import android.graphics.*;
-import android.util.Log;
 
 /**
  * Given starting image of screen, creates a "sliding out" animation
@@ -10,11 +9,11 @@ import android.util.Log;
 public class SlideOutTransition {
 
     // starting image
-    private Bitmap startScreen;
+    private Bitmap startImage;
     // actual working frame to be drawn on
     private Bitmap workingFrame;
     // ending image
-    private Bitmap endScreen;
+    private Bitmap endImage;
     // current frame
     private int frameCounter = 0;
     // total frames in animation
@@ -25,12 +24,15 @@ public class SlideOutTransition {
     private Paint paint;
     // percentage a row should slide across screen before next row starts moving
     private float threshold;
+    // whether start image shoulc be "pushed" off the screen
+    private boolean pushOffScreen = true;
     // whether or not transition has been completed
     private boolean transitionFinished = false;
+    // whether or not transition animation is currently playing
     private boolean isPlaying = false;
-
-    private int screenWidth;
-    private int screenHeight;
+    // dimensions of image
+    private int imgWidth;
+    private int imgHeight;
 
     public boolean hasFinished() {
         return transitionFinished;
@@ -38,16 +40,16 @@ public class SlideOutTransition {
 
     public boolean isPlaying() {
         return isPlaying;
-    }
+    } // todo: settings
 
-    public SlideOutTransition(Bitmap startScreen, Bitmap endScreen, int numRows, int totalFrames) {
-        this.startScreen = startScreen;
-        workingFrame = startScreen.copy(Bitmap.Config.ARGB_8888, true);
-        this.endScreen = endScreen;
+    public SlideOutTransition(Bitmap startImage, Bitmap endImage, int numRows, int totalFrames) {
+        this.startImage = startImage;
+        workingFrame = startImage.copy(Bitmap.Config.ARGB_8888, true);
+        this.endImage = endImage;
         this.numRows = numRows;
         this.totalFrames = totalFrames;
-        screenWidth = startScreen.getWidth();
-        screenHeight = startScreen.getHeight();
+        imgWidth = startImage.getWidth();
+        imgHeight = startImage.getHeight();
         paint = new Paint();
         paint.setColor(Color.BLACK);
     }
@@ -62,10 +64,10 @@ public class SlideOutTransition {
         isPlaying = false;
     }
 
-    // resets frameCounter to zero and recopies startScreen into workingFrame
+    // resets frameCounter to zero and recopies startImage into workingFrame
     public void reset() {
         frameCounter = 0;
-        workingFrame = startScreen.copy(Bitmap.Config.ARGB_8888, true);
+        workingFrame = startImage.copy(Bitmap.Config.ARGB_8888, true);
     }
 
     // renders and returns next frame in sequence
@@ -82,22 +84,37 @@ public class SlideOutTransition {
     // renders and returns frame based on completion of sequence
     public Bitmap getFrame(float completion) { // todo: out of bounds error handling
         Canvas this_frame = new Canvas(workingFrame);
-        int row_height = screenHeight / numRows;
+        int row_height = imgHeight / numRows;
 
-        int full_rows = (int) (completion * numRows);
-        if(full_rows > 0) {
-            Rect src = new Rect(0, 0, screenWidth, full_rows * row_height);
-            this_frame.drawBitmap(endScreen, src, src, null);
-        }
+        if(completion >= 1.0) {
+            return endImage;
+        } else if(completion <= 0.0) {
+            return startImage;
+        } else {
+            // draw full rows, simply transferring from endImage to startImage
+            int full_rows = (int) (completion * numRows);
+            Rect src_end = new Rect(0, 0, imgWidth, full_rows * row_height);
+            this_frame.drawBitmap(endImage, src_end, src_end, null);
 
-        // calculate percentage of current row completed
-        float row_completion = (completion - (full_rows / (float) numRows)) * (float) numRows;
+            // calculate percentage of current row completed
+            float row_completion = (completion - (full_rows / (float) numRows)) * (float) numRows;
 
-        // define subimage of endScreen to draw and transfer onto canvas
-        if(row_completion > 0) {
-            Rect src = new Rect((int) ((1.0f - row_completion) * screenWidth),
-                    full_rows * row_height, screenWidth, (full_rows + 1) * row_height);
-            this_frame.drawBitmap(endScreen, src, src, null);
+            if (pushOffScreen) {
+                // shift current row of start image left, taking 1 - row_completion as width
+                Rect src_start = new Rect((int) (imgWidth * (1.0 - row_completion)), full_rows * row_height,
+                        imgWidth, (full_rows + 1) * row_height);
+                Rect dst_start = new Rect(0, src_start.top, src_start.width(), src_start.bottom);
+                this_frame.drawBitmap(startImage, src_start, dst_start, null);
+
+                // take leading portion from endImage and transfer to trailing portion of start image
+                src_end = new Rect(0, full_rows * row_height, (int) (row_completion * imgWidth), (full_rows + 1) * row_height);
+                Rect dst_end = new Rect(imgWidth - src_end.width(), src_end.top, imgWidth, src_end.bottom);
+                this_frame.drawBitmap(endImage, src_end, dst_end, null);
+            } else {
+                // simply transfer from trailing portion of end image to start image
+                src_end = new Rect(0, full_rows * row_height, (int) (row_completion * imgWidth), (full_rows + 1) * row_height);
+                this_frame.drawBitmap(endImage, src_end, src_end, null);
+            }
         }
         return workingFrame;
     }
