@@ -72,8 +72,16 @@ public abstract class ImageTransition {
         }
     }
 
+    // renders and returns frame as a Bitmap based on completion of
+    // animation sequence
+    public Bitmap getFrame(float completion) {
+        Canvas this_frame = new Canvas(workingFrame);
+        drawFrame(completion, this_frame);
+        return workingFrame;
+    }
+
     // renders and returns frame based on completion of sequence
-    public abstract Bitmap getFrame(float completion);
+    public abstract void drawFrame(float completion, Canvas canvas);
 
     // renders and returns frame based on frameNumber in sequence
     public Bitmap getFrame(int frameNumber) {
