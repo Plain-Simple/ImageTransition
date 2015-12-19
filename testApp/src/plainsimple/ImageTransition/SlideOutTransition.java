@@ -11,7 +11,7 @@ public class SlideOutTransition extends ImageTransition {
     // num rows to slide across screen
     private int numRows;
     // percentage a row should slide across screen before next row starts moving
-    private float threshold;
+    private float threshold = 0.5f;
     // whether start image shoulc be "pushed" off the screen
     private boolean pushOffScreen;
 
@@ -30,7 +30,7 @@ public class SlideOutTransition extends ImageTransition {
             canvas.drawBitmap(endImage, 0, 0, null);
         } else if(completion <= 0.0) {
             canvas.drawBitmap(startImage, 0, 0, null);
-        } else {
+        } else {/*
             // draw full rows, simply transferring from endImage to startImage
             int full_rows = (int) (completion * numRows);
             Rect end_src = new Rect(0, 0, imgWidth, full_rows * row_height);
@@ -54,7 +54,16 @@ public class SlideOutTransition extends ImageTransition {
                 // simply transfer trailing portion of end image to start image
                 end_src = new Rect((int) ((1.0 - row_completion) * imgWidth), full_rows * row_height, imgWidth, (full_rows + 1) * row_height);
                 canvas.drawBitmap(endImage, end_src, end_src, null);
-            }
+            }*/
+            // total thresholds on the screen, including in last row
+            int threshold_width = (int) (imgWidth * threshold);
+            float total_thresholds = (numRows - 1) + 1.0f / threshold;
+            float num_thresholds = total_thresholds * completion;
+            for(int i = 0; i < numRows; i++) {
+                Rect src = new Rect(imgWidth - (int) ((num_thresholds - i) * threshold_width), i * row_height,
+                        imgWidth, (i + 1) * row_height);
+                canvas.drawBitmap(endImage, src, src, null);
+            };
         }
     }
 }
