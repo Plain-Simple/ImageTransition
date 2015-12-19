@@ -32,7 +32,7 @@ public class SlideOutTransition extends ImageTransition {
         } else if(completion <= 0.0) {
             canvas.drawBitmap(startImage, 0, 0, null);
         } else {
-            // total thresholds on the screen, including in last row
+            // count total thresholds on the screen, including in last row
             float total_thresholds = (numRows - 1) + 1.0f / threshold;
             float num_thresholds = total_thresholds * completion;
             for(int i = 0; i < numRows; i++) { // todo: prevent from slowing down: never draw more than full screen
@@ -59,7 +59,7 @@ public class SlideOutTransition extends ImageTransition {
                     // simply transfer pixels from endImage to startImage. No change necessary.
                     canvas.drawBitmap(endImage, src, src, null);
                 }
-            };
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.*;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import plainsimple.ImageTransition.SlideInTransition;
 import plainsimple.ImageTransition.SlideOutTransition;
 
 /**
@@ -18,6 +19,7 @@ public class MainView extends View {
     private int screenW;
     private int screenH;
     private SlideOutTransition slideOut;
+    private SlideInTransition slideIn;
 
     public MainView(Context context) {
         super(context);
@@ -33,12 +35,13 @@ public class MainView extends View {
         titleGraphic = Bitmap.createScaledBitmap(titleGraphic, screenW, screenH, false); // todo: use matrix to resize image
         testGraphic = Bitmap.createScaledBitmap(testGraphic, screenW, screenH, false);
         slideOut = new SlideOutTransition(titleGraphic, testGraphic, 6, 100, true);
+        slideIn = new SlideInTransition(titleGraphic, testGraphic, 6, 100, false);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if(slideOut.isPlaying()) {
-            canvas.drawBitmap(slideOut.nextFrame(), 0, 0, null);
+        if(slideIn.isPlaying()) {
+            canvas.drawBitmap(slideIn.nextFrame(), 0, 0, null);
         } else {
             canvas.drawBitmap(titleGraphic, 0, 0, null);
         }
@@ -50,17 +53,17 @@ public class MainView extends View {
         int y = (int) event.getY();
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if(!slideOut.isPlaying()) {
-                    if(slideOut.hasFinished()) {
-                        slideOut.reset();
+                if(!slideIn.isPlaying()) {
+                    if(slideIn.hasFinished()) {
+                        slideIn.reset();
                     }
-                    slideOut.start();
+                    slideIn.start();
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                slideOut.stop();
+                slideIn.stop();
                 break;
         }
         return true;
