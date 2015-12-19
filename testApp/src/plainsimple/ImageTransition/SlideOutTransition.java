@@ -25,44 +25,40 @@ public class SlideOutTransition extends ImageTransition {
     // given canvas
     public void drawFrame(float completion, Canvas canvas) {
         int row_height = imgHeight / numRows;
+        int threshold_width = (int) (imgWidth * threshold);
 
         if(completion >= 1.0) {
             canvas.drawBitmap(endImage, 0, 0, null);
         } else if(completion <= 0.0) {
             canvas.drawBitmap(startImage, 0, 0, null);
-        } else {/*
-            // draw full rows, simply transferring from endImage to startImage
-            int full_rows = (int) (completion * numRows);
-            Rect end_src = new Rect(0, 0, imgWidth, full_rows * row_height);
-            canvas.drawBitmap(endImage, end_src, end_src, null);
-
-            // calculate percentage of current row completed
-            float row_completion = (completion - (full_rows / (float) numRows)) * (float) numRows;
-
-            if (pushOffScreen) {
-                // shift current row of start image left, taking 1 - row_completion as width
-                Rect start_src = new Rect((int) (imgWidth * row_completion), full_rows * row_height,
-                        imgWidth, (full_rows + 1) * row_height);
-                Rect start_dst = new Rect(0, start_src.top, start_src.width(), start_src.bottom);
-                canvas.drawBitmap(startImage, start_src, start_dst, null);
-
-                // take leading portion from endImage and transfer to trailing portion of start image
-                end_src = new Rect(0, full_rows * row_height, (int) (row_completion * imgWidth), (full_rows + 1) * row_height);
-                Rect end_dst = new Rect(imgWidth - end_src.width(), end_src.top, imgWidth, end_src.bottom);
-                canvas.drawBitmap(endImage, end_src, end_dst, null);
-            } else {
-                // simply transfer trailing portion of end image to start image
-                end_src = new Rect((int) ((1.0 - row_completion) * imgWidth), full_rows * row_height, imgWidth, (full_rows + 1) * row_height);
-                canvas.drawBitmap(endImage, end_src, end_src, null);
-            }*/
+        } else {
             // total thresholds on the screen, including in last row
-            int threshold_width = (int) (imgWidth * threshold);
             float total_thresholds = (numRows - 1) + 1.0f / threshold;
             float num_thresholds = total_thresholds * completion;
-            for(int i = 0; i < numRows; i++) {
+            for(int i = 0; i < numRows; i++) { // todo: prevent from slowing down: never draw more than full screen
+                // represents section of the row on canvas that is in transition
                 Rect src = new Rect(imgWidth - (int) ((num_thresholds - i) * threshold_width), i * row_height,
                         imgWidth, (i + 1) * row_height);
-                canvas.drawBitmap(endImage, src, src, null);
+                // limit to width of screen
+                if(src.width() > imgWidth) {
+                    src.left = 0;
+                }
+                if(pushOffScreen) {
+                    // pixels from startImage to be shifted left
+                    Rect start_src = new Rect(src.width(), src.top, imgWidth, src.bottom);
+                    // new location of shifted pixels
+                    Rect start_dst = new Rect(0, start_src.top, start_src.width(), start_src.bottom);
+                    canvas.drawBitmap(startImage, start_src, start_dst, null);
+
+                    // pixels from endImage to be drawn on canvas
+                    Rect end_src = new Rect(0, src.top, src.width(), src.bottom);
+                    // new location of pixels on canvas
+                    Rect end_dst = new Rect(src.left, src.top, src.right, src.bottom);
+                    canvas.drawBitmap(endImage, end_src, end_dst, null);
+                } else {
+                    // simply transfer pixels from endImage to startImage. No change necessary.
+                    canvas.drawBitmap(endImage, src, src, null);
+                }
             };
         }
     }
