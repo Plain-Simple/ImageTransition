@@ -35,7 +35,7 @@ public class MainView extends View {
         titleGraphic = Bitmap.createScaledBitmap(titleGraphic, screenW, screenH, false); // todo: use matrix to resize image
         testGraphic = Bitmap.createScaledBitmap(testGraphic, screenW, screenH, false);
         slideOut = new SlideOutTransition(titleGraphic, testGraphic, 6, 100, true);
-        slideIn = new SlideInTransition(titleGraphic, testGraphic, 6, 100, false);
+        slideIn = new SlideInTransition(titleGraphic, testGraphic, 6, 100, true);
     }
 
     @Override
