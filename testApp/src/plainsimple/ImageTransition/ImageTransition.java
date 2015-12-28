@@ -4,7 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 /**
- * Superclass
+ * ImageTransition superclass. Provides methods for managing
+ * the animation.
+ * Copyright(C) Plain Simple Apps 2015
+ * Licensed under GPL GNU Version 3 (see license.txt)
+ * See plain-simple.github.io for more information.
  */
 public abstract class ImageTransition {
     

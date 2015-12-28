@@ -1,18 +1,25 @@
 package plainsimple.ImageTransition;
 
 import android.graphics.*;
-import android.util.Log;
 
 /**
  * Given starting image of screen, creates a "sliding out" animation
- * and feeds frames
+ * from top right to bottom left.
+ * If pushOffScreen = true, the incoming image will appear to push the
+ * current image off the screen as the animation progresses.
+ * The threshold value sets how far across the screen a row can transition
+ * before the next row can start transitioning--a value of 1.0f will make
+ * each row transition fully before the next can begin.
+ * Copyright(C) Plain Simple Apps 2015
+ * Licensed under GPL GNU Version 3 (see license.txt)
+ * See plain-simple.github.io for more information.
  */
 public class SlideOutTransition extends ImageTransition {
 
     // num rows to slide across screen
     private int numRows;
     // percentage a row should slide across screen before next row starts moving
-    private float threshold = 0.5f;
+    private float threshold;
     // whether start image shoulc be "pushed" off the screen
     private boolean pushOffScreen;
 

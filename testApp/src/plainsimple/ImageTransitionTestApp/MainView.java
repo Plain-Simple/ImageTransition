@@ -15,12 +15,9 @@ public class MainView extends View {
 
     private Bitmap mainGraphic;
     private Bitmap testGraphic;
-    private int screenW;
-    private int screenH;
     private SlideOutTransition slideOut;
     private SlideInTransition slideIn;
     private boolean onMainScreen = true;
-    private boolean b = true;
 
     public MainView(Context context) {
         super(context);
@@ -31,10 +28,8 @@ public class MainView extends View {
     @Override
     public void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
-        screenW = w;
-        screenH = h;
-        mainGraphic = Bitmap.createScaledBitmap(mainGraphic, screenW, screenH, false); // todo: use matrix to resize image
-        testGraphic = Bitmap.createScaledBitmap(testGraphic, screenW, screenH, false);
+        mainGraphic = Bitmap.createScaledBitmap(mainGraphic, w, h, false); // todo: use matrix to resize image
+        testGraphic = Bitmap.createScaledBitmap(testGraphic, w, h, false);
         // the main graphic will slide out to test graphic
         slideOut = new SlideOutTransition(mainGraphic, testGraphic, 6, 100, 0.5f, false);
         // the test graphic will slide in to main graphic
@@ -47,9 +42,9 @@ public class MainView extends View {
             canvas.drawBitmap(slideIn.nextFrame(), 0, 0, null);
         } else if (slideOut.isPlaying()) {
             canvas.drawBitmap(slideOut.nextFrame(), 0, 0, null);
-        } else if (onMainScreen == true) {
+        } else if (onMainScreen) {
             canvas.drawBitmap(mainGraphic, 0, 0, null);
-        } else if (onMainScreen == false) {
+        } else if (!onMainScreen) {
             canvas.drawBitmap(testGraphic, 0, 0, null);
         }
         if (slideIn.hasFinished()) {

@@ -3,10 +3,18 @@ package plainsimple.ImageTransition;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.util.Log;
 
 /**
- * Created by Stefan on 12/19/2015.
+ * Given starting image of screen, creates a "sliding out" animation
+ * from bottom left to top right.
+ * If pushOffScreen = true, the incoming image will appear to push the
+ * current image off the screen as the animation progresses.
+ * The threshold value sets how far across the screen a row can transition
+ * before the next row can start transitioning--a value of 1.0f will make
+ * each row transition fully before the next can begin.
+ * Copyright(C) Plain Simple Apps 2015
+ * Licensed under GPL GNU Version 3 (see license.txt)
+ * See plain-simple.github.io for more information.
  */
 public class SlideInTransition extends ImageTransition {
 
