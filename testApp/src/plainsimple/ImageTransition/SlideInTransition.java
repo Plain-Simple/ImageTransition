@@ -13,13 +13,14 @@ public class SlideInTransition extends ImageTransition {
     // num rows to slide across screen
     private int numRows;
     // percentage a row should slide across screen before next row starts moving
-    private float threshold = 0.5f;
+    private float threshold;
     // whether start image shoulc be "pushed" off the screen
     private boolean pushOffScreen;
 
-    public SlideInTransition(Bitmap startImage, Bitmap endImage, int numRows, int totalFrames, boolean pushOffScreen) {
+    public SlideInTransition(Bitmap startImage, Bitmap endImage, int numRows, int totalFrames, float threshold, boolean pushOffScreen) {
         super(startImage, endImage, totalFrames);
         this.numRows = numRows;
+        this.threshold = threshold;
         this.pushOffScreen = pushOffScreen;
     }
 
@@ -41,11 +42,15 @@ public class SlideInTransition extends ImageTransition {
                 // represents section of the row on canvas that is in transition
                 Rect src = new Rect(0, (numRows - i - 1) * row_height,
                         (int) ((num_thresholds - i) * threshold_width), (numRows - i) * row_height);
+                // force bottom row to fill screen to bottom
+                if(i == 0) {
+                    src.bottom = imgHeight;
+                }
                 // limit to width of screen
                 if(src.width() > imgWidth) {
                     src.right = imgWidth;
                 }
-                if(pushOffScreen) { 
+                if(pushOffScreen) {
                     // pixels from startImage to be shifted right
                     Rect start_src = new Rect(0, src.top, imgWidth - src.width(), src.bottom);
                     // new location of shifted pixels

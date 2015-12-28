@@ -1,6 +1,7 @@
 package plainsimple.ImageTransition;
 
 import android.graphics.*;
+import android.util.Log;
 
 /**
  * Given starting image of screen, creates a "sliding out" animation
@@ -15,10 +16,11 @@ public class SlideOutTransition extends ImageTransition {
     // whether start image shoulc be "pushed" off the screen
     private boolean pushOffScreen;
 
-    public SlideOutTransition(Bitmap startImage, Bitmap endImage, int numRows, int totalFrames, boolean pushOffScreen) {
+    public SlideOutTransition(Bitmap startImage, Bitmap endImage, int numRows, int totalFrames, float threshold, boolean pushOffScreen) {
         super(startImage, endImage, totalFrames);
         this.numRows = numRows;
         this.pushOffScreen = pushOffScreen;
+        this.threshold = threshold;
     }
 
     // draws frame based on completion of animation sequence onto
@@ -38,6 +40,10 @@ public class SlideOutTransition extends ImageTransition {
                 // represents section of the row on canvas that is in transition
                 Rect src = new Rect(imgWidth - (int) ((num_thresholds - i) * threshold_width), i * row_height,
                         imgWidth, (i + 1) * row_height);
+                // force bottom row to fill screen to bottom
+                if(i == numRows - 1) {
+                    src.bottom = imgHeight;
+                }
                 // limit to width of screen
                 if(src.width() > imgWidth) {
                     src.left = 0;
