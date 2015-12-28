@@ -36,7 +36,7 @@ public class MainView extends View {
         mainGraphic = Bitmap.createScaledBitmap(mainGraphic, screenW, screenH, false); // todo: use matrix to resize image
         testGraphic = Bitmap.createScaledBitmap(testGraphic, screenW, screenH, false);
         // the main graphic will slide out to test graphic
-        slideOut = new SlideOutTransition(mainGraphic, testGraphic, 6, 100, true);
+        slideOut = new SlideOutTransition(mainGraphic, testGraphic, 6, 100, false);
         // the test graphic will slide in to main graphic
         slideIn = new SlideInTransition(testGraphic, mainGraphic, 6, 100, true);
     }

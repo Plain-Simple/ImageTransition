@@ -26,7 +26,6 @@ public class SlideOutTransition extends ImageTransition {
     public void drawFrame(float completion, Canvas canvas) {
         int row_height = imgHeight / numRows;
         int threshold_width = (int) (imgWidth * threshold);
-
         if(completion >= 1.0) {
             canvas.drawBitmap(endImage, 0, 0, null);
         } else if(completion <= 0.0) {

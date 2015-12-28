@@ -37,7 +37,7 @@ public class SlideInTransition extends ImageTransition {
             float total_thresholds = (numRows - 1) + 1.0f / threshold;
             float num_thresholds = total_thresholds * completion;
             // draw from bottom to top
-            for(int i = 0; i < numRows && i <= numRows; i++) {
+            for(int i = 0; i < numRows && i <= num_thresholds; i++) {
                 // represents section of the row on canvas that is in transition
                 Rect src = new Rect(0, (numRows - i - 1) * row_height,
                         (int) ((num_thresholds - i) * threshold_width), (numRows - i) * row_height);
@@ -45,11 +45,11 @@ public class SlideInTransition extends ImageTransition {
                 if(src.width() > imgWidth) {
                     src.right = imgWidth;
                 }
-                if(pushOffScreen) {
+                if(pushOffScreen) { 
                     // pixels from startImage to be shifted right
                     Rect start_src = new Rect(0, src.top, imgWidth - src.width(), src.bottom);
                     // new location of shifted pixels
-                    Rect start_dst = new Rect(imgWidth - start_src.width(), start_src.top, imgWidth, start_src.bottom);
+                    Rect start_dst = new Rect(imgWidth - start_src.width(), src.top, imgWidth, src.bottom);
                     canvas.drawBitmap(startImage, start_src, start_dst, null);
 
                     // pixels from endImage to be drawn on canvas
