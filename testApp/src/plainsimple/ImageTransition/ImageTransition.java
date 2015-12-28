@@ -65,7 +65,7 @@ public abstract class ImageTransition {
     }
 
     // renders and returns next frame in sequence
-    public Bitmap nextFrame() {
+    public Bitmap nextFrame() { // todo: drawNextFrame
         if (frameCounter == 0) {
             start();
         }

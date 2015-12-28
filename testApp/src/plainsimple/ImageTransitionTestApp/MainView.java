@@ -38,9 +38,10 @@ public class MainView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (slideIn.isPlaying()) {
-            canvas.drawBitmap(slideIn.nextFrame(), 0, 0, null);
+            //canvas.drawBitmap(slideIn.nextFrame(), 0, 0, null);
+            slideIn.draw
         } else if (slideOut.isPlaying()) {
-            canvas.drawBitmap(slideOut.nextFrame(), 0, 0, null);
+            //canvas.drawBitmap(slideOut.nextFrame(), 0, 0, null);
         } else if (onMainScreen) {
             canvas.drawBitmap(mainGraphic, 0, 0, null);
         } else if (!onMainScreen) {
