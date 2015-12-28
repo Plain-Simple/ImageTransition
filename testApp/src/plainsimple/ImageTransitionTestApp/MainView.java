@@ -20,6 +20,7 @@ public class MainView extends View {
     private SlideOutTransition slideOut;
     private SlideInTransition slideIn;
     private boolean onMainScreen = true;
+    private boolean b = true;
 
     public MainView(Context context) {
         super(context);
@@ -42,7 +43,6 @@ public class MainView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d("Main Class", "Main Screen = " + onMainScreen);
         if (slideIn.isPlaying()) {
             canvas.drawBitmap(slideIn.nextFrame(), 0, 0, null);
         } else if (slideOut.isPlaying()) {
@@ -51,6 +51,14 @@ public class MainView extends View {
             canvas.drawBitmap(mainGraphic, 0, 0, null);
         } else if (onMainScreen == false) {
             canvas.drawBitmap(testGraphic, 0, 0, null);
+        }
+        if (slideIn.hasFinished()) {
+            onMainScreen = true;
+            slideIn.reset();
+        }
+        if (slideOut.hasFinished()) {
+            onMainScreen = false;
+            slideOut.reset();
         }
         invalidate();
     }
@@ -62,14 +70,6 @@ public class MainView extends View {
                     slideOut.start();
                 } else if (!onMainScreen && !slideIn.isPlaying()) {
                     slideIn.start();
-                }
-                if (slideIn.hasFinished()) {
-                    onMainScreen = true;
-                    slideIn.reset();
-                }
-                if (slideOut.hasFinished()) {
-                    onMainScreen = false;
-                    slideOut.reset();
                 }
                 break;
             case MotionEvent.ACTION_MOVE:

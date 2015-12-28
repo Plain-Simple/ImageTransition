@@ -19,7 +19,7 @@ public abstract class ImageTransition {
     // total frames in animation
     protected int totalFrames;
     // whether or not transition has been completed
-    protected boolean transitionFinished = false;
+    protected boolean hasFinished = false;
     // whether or not transition animation is currently playing
     protected boolean isPlaying = false;
     // dimensions of image
@@ -27,7 +27,7 @@ public abstract class ImageTransition {
     protected int imgHeight;
 
     public boolean hasFinished() {
-        return transitionFinished;
+        return hasFinished;
     }
     public boolean isPlaying() {
         return isPlaying;
@@ -46,15 +46,16 @@ public abstract class ImageTransition {
         isPlaying = true;
     }
 
-    // sets transitionFinished to true
+    // sets hasFinished to true
     public void stop() {
-        transitionFinished = true;
+        hasFinished = true;
         isPlaying = false;
     }
 
     // resets frameCounter to zero and recopies startImage into workingFrame
     public void reset() {
         frameCounter = 0;
+        hasFinished = false;
         workingFrame = startImage.copy(Bitmap.Config.ARGB_8888, true);
     }
 
