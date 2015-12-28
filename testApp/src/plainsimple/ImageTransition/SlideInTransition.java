@@ -1,4 +1,4 @@
-package plainsimple.ImageTransition;
+package plainsimple.imagetransition;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -37,28 +37,28 @@ public class SlideInTransition extends ImageTransition {
     public void drawFrame(float completion, Canvas canvas) {
         int row_height = imgHeight / numRows;
         int threshold_width = (int) (imgWidth * threshold);
-        if(completion >= 1.0) {
+        if (completion >= 1.0) {
             canvas.drawBitmap(endImage, 0, 0, null);
-        } else if(completion <= 0.0) {
+        } else if (completion <= 0.0) {
             canvas.drawBitmap(startImage, 0, 0, null);
         } else {
             // count total thresholds on the screen, including in last row
             float total_thresholds = (numRows - 1) + 1.0f / threshold;
             float num_thresholds = total_thresholds * completion;
             // draw from bottom to top
-            for(int i = 0; i < numRows && i <= num_thresholds; i++) {
+            for (int i = 0; i < numRows && i <= num_thresholds; i++) {
                 // represents section of the row on canvas that is in transition
                 Rect src = new Rect(0, (numRows - i - 1) * row_height,
                         (int) ((num_thresholds - i) * threshold_width), (numRows - i) * row_height);
                 // force bottom row to fill screen to bottom
-                if(i == 0) {
+                if (i == 0) {
                     src.bottom = imgHeight;
                 }
                 // limit to width of screen
-                if(src.width() > imgWidth) {
+                if (src.width() > imgWidth) {
                     src.right = imgWidth;
                 }
-                if(pushOffScreen) {
+                if (pushOffScreen) {
                     // pixels from startImage to be shifted right
                     Rect start_src = new Rect(0, src.top, imgWidth - src.width(), src.bottom);
                     // new location of shifted pixels

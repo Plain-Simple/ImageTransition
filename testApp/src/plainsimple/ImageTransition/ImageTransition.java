@@ -1,4 +1,4 @@
-package plainsimple.ImageTransition;
+package plainsimple.imagetransition;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,7 +11,7 @@ import android.graphics.Canvas;
  * See plain-simple.github.io for more information.
  */
 public abstract class ImageTransition {
-    
+
     // starting image
     protected Bitmap startImage;
     // actual working frame to be drawn on
@@ -33,6 +33,7 @@ public abstract class ImageTransition {
     public boolean hasFinished() {
         return hasFinished;
     }
+
     public boolean isPlaying() {
         return isPlaying;
     }
@@ -65,7 +66,7 @@ public abstract class ImageTransition {
 
     // renders and returns next frame in sequence
     public Bitmap nextFrame() {
-        if(frameCounter == 0) {
+        if (frameCounter == 0) {
             start();
         }
         if (frameCounter < totalFrames) {

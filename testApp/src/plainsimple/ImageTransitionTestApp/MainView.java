@@ -2,11 +2,10 @@ package plainsimple.ImageTransitionTestApp;
 
 import android.content.Context;
 import android.graphics.*;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import plainsimple.ImageTransition.SlideInTransition;
-import plainsimple.ImageTransition.SlideOutTransition;
+import plainsimple.imagetransition.SlideInTransition;
+import plainsimple.imagetransition.SlideOutTransition;
 
 /**
  * Created by Stefan on 10/17/2015.
@@ -59,7 +58,7 @@ public class MainView extends View {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        switch(event.getAction()) {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (onMainScreen && !slideOut.isPlaying()) {
                     slideOut.start();
